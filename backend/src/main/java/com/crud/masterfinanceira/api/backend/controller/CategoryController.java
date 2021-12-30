@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import com.crud.masterfinanceira.api.backend.model.Category;
 import com.crud.masterfinanceira.api.backend.repository.CategoryRepository;
@@ -33,7 +34,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> saveCategory(@RequestBody Category category, HttpServletResponse response) {
+    public ResponseEntity<Category> saveCategory(@Valid @RequestBody Category category, HttpServletResponse response) {
         Category  categorySave = categoryRepository.save(category);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
