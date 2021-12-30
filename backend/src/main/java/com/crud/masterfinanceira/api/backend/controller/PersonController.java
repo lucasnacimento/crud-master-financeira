@@ -1,15 +1,17 @@
 package com.crud.masterfinanceira.api.backend.controller;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.crud.masterfinanceira.api.backend.event.ResourceEvent;
 import com.crud.masterfinanceira.api.backend.model.Person;
 import com.crud.masterfinanceira.api.backend.repository.PersonRepository;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,8 @@ public class PersonController {
     
     private PersonRepository personRepository;
 
+    private ApplicationEventPublisher publisher;
+
     @GetMapping
     public List<Person> listAllPersons() {
         return personRepository.findAll();
@@ -37,11 +41,9 @@ public class PersonController {
     public ResponseEntity<Person> savePerson(@Valid @RequestBody Person person, HttpServletResponse response) {
         Person personSave = personRepository.save(person);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
-                .buildAndExpand(personSave.getId()).toUri();
+       publisher.publishEvent(new ResourceEvent(this, response, personSave.getId()));
 
-        response.setHeader("Location", uri.toASCIIString());
-        return ResponseEntity.created(uri).body(personSave);
+        return ResponseEntity.status(HttpStatus.CREATED).body(personSave);
     }
 
     @GetMapping("/{id}")
