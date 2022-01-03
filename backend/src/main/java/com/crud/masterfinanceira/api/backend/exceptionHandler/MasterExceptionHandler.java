@@ -32,7 +32,7 @@ public class MasterExceptionHandler extends ResponseEntityExceptionHandler{
             HttpHeaders headers, HttpStatus status, WebRequest request) {
             
             String messageUser = msgSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
-            String messageDev = ex.getCause().toString();
+            String messageDev = ex.getCause() != null ? ex.getCause().toString(): ex.toString();
             List<Erro> errs =Arrays.asList(new Erro(messageUser, messageDev));
             return handleExceptionInternal(ex, errs , headers, HttpStatus.BAD_REQUEST, request);
     }

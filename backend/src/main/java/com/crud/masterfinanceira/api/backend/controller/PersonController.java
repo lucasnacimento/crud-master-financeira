@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import com.crud.masterfinanceira.api.backend.event.ResourceEvent;
 import com.crud.masterfinanceira.api.backend.model.Person;
 import com.crud.masterfinanceira.api.backend.repository.PersonRepository;
+import com.crud.masterfinanceira.api.backend.service.PersonService;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,6 +34,8 @@ public class PersonController {
     private PersonRepository personRepository;
 
     private ApplicationEventPublisher publisher;
+
+    private PersonService personService;
 
     @GetMapping
     public List<Person> listAllPersons() {
@@ -57,6 +61,18 @@ public class PersonController {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deletePerson(@PathVariable Long id) {
         personRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @Valid @RequestBody Person person){
+        Person personSave = personService.update(id, person);
+        return ResponseEntity.ok(personSave);
+    }
+
+    @PutMapping("/{id}/active")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void updatePropertyActive(@PathVariable Long id, @RequestBody Boolean active){
+        personService.updatePropertyActive(id, active);
     }
 
 }
