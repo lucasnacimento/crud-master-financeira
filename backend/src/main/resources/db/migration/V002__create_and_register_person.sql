@@ -17,4 +17,4 @@ CREATE TABLE person (
 );
 
 INSERT INTO person (username, active, street, number, complement, district, zipcode, city, state) 
-        VALUES ("Lucas Nascimento", true, "Av primerio de maio", "147", "prox a prefeitura", "centro", "58511000", "Monteiro","pernambuco");
+        VALUES ("Lucas Nascimento", true, "Av primerio de maio", "147", "prox a prefeitura", "centro", "58511000", "Monteiro","paraiba");
