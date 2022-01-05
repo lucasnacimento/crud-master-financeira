@@ -39,9 +39,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Category> saveCategory(@Valid @RequestBody Category category, HttpServletResponse response) {
         Category  categorySave = categoryRepository.save(category);
-
         publisher.publishEvent(new ResourceEvent(this, response, categorySave.getId()));
-
         return ResponseEntity.status(HttpStatus.CREATED).body(categorySave);
     }
 
