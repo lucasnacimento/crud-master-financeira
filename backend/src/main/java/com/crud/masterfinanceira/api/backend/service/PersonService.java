@@ -25,7 +25,7 @@ public class PersonService {
         
     }
 
-    private Person getPersonId(Long id) {
+    public Person getPersonId(Long id) {
         Optional<Person> personSave = personRepository.findById(id);
         if (personSave.isEmpty()) {
             throw new EmptyResultDataAccessException(1);

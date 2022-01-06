@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,6 +38,7 @@ public class Launch {
     @Column(name = "date_payment")
     private LocalDate datePayment;
 
+    @NotNull
     private BigDecimal price;
 
     private String note;
