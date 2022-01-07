@@ -14,13 +14,17 @@ import javax.persistence.criteria.Root;
 import com.crud.masterfinanceira.api.backend.model.Launch;
 import com.crud.masterfinanceira.api.backend.repository.filter.LaunchFilter;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 public class LaunchRepositoryImpl implements LaunchRepositoryQuery{
 
     @PersistenceContext
     private EntityManager manager;
 
     @Override
-    public List<Launch> filter(LaunchFilter launchFilter) {
+    public Page<Launch> filter(LaunchFilter launchFilter, Pageable pageable) {
         CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Launch.class);
 
@@ -30,11 +34,13 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery{
         criteriaQuery.where(predicates);
 
         TypedQuery<Launch> query = manager.createQuery(criteriaQuery);
-
-        return query.getResultList();
+        
+        addRestrictionsPageable(query, pageable);
+        return new PageImpl<>(query.getResultList(), pageable, total(launchFilter));  
 
     }
 
+    
     private Predicate[] createRestrictions(LaunchFilter launchFilter, CriteriaBuilder criteriaBuilder, Root<Launch> root) {
         List<Predicate> predicates = new ArrayList<>();
        
@@ -50,6 +56,26 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery{
         
         return predicates.toArray(new Predicate[predicates.size()]);
     }
+    
+    private Long total(LaunchFilter launchFilter) {
+        CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root root = criteriaQuery.from(Launch.class);
 
+        Predicate[] predicates = createRestrictions(launchFilter, criteriaBuilder, root);
+        criteriaQuery.where(predicates);
+
+        criteriaQuery.select(criteriaBuilder.count(root));
+        return (Long) manager.createQuery(criteriaQuery).getSingleResult();
+    }
+
+    private void addRestrictionsPageable(TypedQuery<Launch> query, Pageable pageable) {
+        int pageCurrent = pageable.getPageNumber();
+        int totalRegisterToPage =  pageable.getPageSize();
+        int primaryRegisterFromPage = pageCurrent * totalRegisterToPage;
+
+        query.setFirstResult(primaryRegisterFromPage);
+        query.setMaxResults(totalRegisterToPage);
+    }
     
 }

@@ -18,6 +18,8 @@ import com.crud.masterfinanceira.api.backend.service.exception.PersonDoesNotExis
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,8 +48,8 @@ public class LaunchController {
     private MessageSource msgSource;
     
     @GetMapping
-    public List<Launch> listAllLaunch(LaunchFilter launchFilter) {
-        return launchRepository.filter(launchFilter);
+    public Page<Launch> listAllLaunch(LaunchFilter launchFilter, Pageable pageable) {
+        return launchRepository.filter(launchFilter, pageable);
     }
 
     @GetMapping("/{id}")
