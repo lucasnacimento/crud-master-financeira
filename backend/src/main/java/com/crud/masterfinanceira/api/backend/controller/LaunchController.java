@@ -11,6 +11,7 @@ import com.crud.masterfinanceira.api.backend.event.ResourceEvent;
 import com.crud.masterfinanceira.api.backend.exceptionHandler.MasterExceptionHandler.Erro;
 import com.crud.masterfinanceira.api.backend.model.Launch;
 import com.crud.masterfinanceira.api.backend.repository.LaunchRepository;
+import com.crud.masterfinanceira.api.backend.repository.filter.LaunchFilter;
 import com.crud.masterfinanceira.api.backend.service.LaunchService;
 import com.crud.masterfinanceira.api.backend.service.exception.PersonDoesNotExist;
 
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 import lombok.AllArgsConstructor;
 
@@ -44,8 +44,8 @@ public class LaunchController {
     private MessageSource msgSource;
     
     @GetMapping
-    public List<Launch> listAllLaunch() {
-        return launchRepository.findAll();
+    public List<Launch> listAllLaunch(LaunchFilter launchFilter) {
+        return launchRepository.filter(launchFilter);
     }
 
     @GetMapping("/{id}")
